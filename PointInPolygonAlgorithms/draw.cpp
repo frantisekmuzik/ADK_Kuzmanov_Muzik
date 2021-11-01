@@ -14,9 +14,13 @@ Draw::Draw(QWidget *parent) : QWidget(parent)
 
 void Draw::loadPolygon(std::string &path)
 {
+    polygons.clear();
+    position.clear();
+    repaint();
     int id;
     double x, y;
     QPolygon polygon;
+
 
     //Load data from file
     std::ifstream coords(path);
@@ -46,28 +50,7 @@ void Draw::loadPolygon(std::string &path)
 }
 
 
-void Draw::paintEvent(QPaintEvent *event)
-{
-    // Create graphic object
-    QPainter painter(this);
-    painter.begin(this);
 
-    //Draw point q
-    painter.drawEllipse(q.x()-4, q.y()-4, 8, 8);
-
-    //Improvements
-    //for( QPoint vertex : vertices)
-    //    pol.append(vertex)
-
-    //Draw loaded polygons
-    for(int i = 0; i < polygons.size(); i++)
-    {
-        QPolygon draw_pol = polygons[i];
-        painter.drawPolygon(draw_pol);
-    }
-
-    painter.end();
-}
 
 void Draw::mousePressEvent(QMouseEvent *event)
 {
@@ -94,6 +77,54 @@ void Draw::mousePressEvent(QMouseEvent *event)
 
     //Repaint screen
     repaint();
+}
+
+void Draw::paintEvent(QPaintEvent *event)
+{
+
+    // Create graphic object
+    QPainter painter(this);
+    painter.begin(this);
+
+    //Draw point q
+    painter.drawEllipse(q.x()-4, q.y()-4, 8, 8);
+
+    //Improvements
+    //for( QPoint vertex : vertices)
+    //    pol.append(vertex)
+
+    //Draw loaded polygons
+    for(int i = 0; i < polygons.size(); i++)
+    {
+        QPolygon draw_pol = polygons[i];
+        painter.drawPolygon(draw_pol);
+    }
+
+    //set color of highlighted polygon
+    QBrush brush;
+    brush.setColor(Qt::red);
+    brush.setStyle(Qt::SolidPattern);
+    QPainterPath path;
+
+    QPolygon highlight;
+
+    for(int i = 0; i < position.size(); i++)
+    {
+        if(position[i] == 1 || position[i] == -1)
+        {
+            highlight << polygons[i];
+            path.addPolygon(highlight);
+            painter.fillPath(path, brush);
+
+            //Draw highlighted polygon
+            painter.drawPolygon(highlight);
+
+            highlight.clear();
+        }
+    }
+
+    painter.end();
+
 }
 
 void Draw::clear()

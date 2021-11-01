@@ -14,6 +14,7 @@ private:
     QPoint q;
     std::vector<QPolygon> polygons;
     bool enable_draw;
+    std::vector<int> position;
 
 public:
     explicit Draw(QWidget *parent = nullptr);
@@ -24,6 +25,7 @@ public:
     void changeStatus(){enable_draw = !enable_draw;}
     QPoint getPoint(){return q;}
     std::vector<QPolygon> getPolygons(){return polygons;}
+    void setPosition(std::vector<int> pos){position = pos;}
 
 signals:
 

@@ -34,6 +34,9 @@ void Widget::on_pushButtonAnalyze_clicked()
     std::vector<QPolygon> polygons = ui->Canvas->getPolygons();
     std::vector<QPoint> pol;
 
+    //Position of point
+    std::vector<int> position;
+
 
     for (int i = 0; i < polygons.size(); i++)
     {
@@ -68,20 +71,26 @@ void Widget::on_pushButtonAnalyze_clicked()
     if (pos == 1)
     {
         ui->label->setText("Point is inside");
-
+        position.push_back(pos);
     }
     else if (pos == 0)
     {
         ui->label->setText("Point is outside");
+        position.push_back(pos);
     }
     else if (pos == -1)
     {
         ui->label->setText("Point is on the border");
+        position.push_back(pos);
     }
     else
     {
         ui->label->setText("Error: No polygons");
     }
+
+
+    ui->Canvas->setPosition(position);
+    ui->Canvas->repaint();
 
 }
 
